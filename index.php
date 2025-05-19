@@ -2,7 +2,7 @@
 require_once 'connexion.php';
 require 'functions.php';
 //Appel de fonction pour récupérer la liste des dinosaures et autres espèces.
-// ---------- Votre saisie --------------
+$especes = getEspece($db);
 ?>
 
 <!DOCTYPE html>
@@ -34,32 +34,33 @@ require 'functions.php';
             <section class="items" id="items">
                 <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4">                 
                     <?php
-                     // boucle d'affichage
-                     // -------- Votre saisie ------------
-?>
+                    // Boucle d'affichage pour chaque espèce
+                    foreach ($especes as $espece) {
+                    ?>
                         <div class="col">
                             <div class="item-container">
                                 <div class="item d-flex flex-column align-items-center text-center">
-                                    <!-- Utilsez vos variables pour afficher les différents attributs de l'espèce -->
-                                    <!-- <a href="detail.php?id=<?$votreVariableID?>" class="item__link"> -->
+                                    <a href="detail.php?id=<?= $espece['id_espece'] ?>" class="item__link">
                                         <div class="item__info">
-                                            <!-- <h3 class="item__title"><?= $leNomEspece ?></h3> -->
+                                            <h3 class="item__title"><?= $espece['nom_espece'] ?></h3>
                                         </div>
                                         <div class="item__image-container">
-                                            <!-- <img src="<?= $imageEspece ?>" alt="<?= $leNomEspece ?>" class="item__image"> -->
+                                            <img src="<?= $espece['img_espece'] ?>" alt="<?= $espece['nom_espece'] ?>" class="item__image">
                                         </div>
                                         <div class="item__info">
                                             <p class="item__description">
-                                                <!-- Type: <?= $typeEspece ?><br> -->
-                                                <!-- Période: <?= $periodeEspece ?> -->
+                                                Type: <?= $espece['type_espece'] ?><br>
+                                                Période: <?= $espece['nom_periode_espece'] ?>
                                             </p>
                                         </div>
                                     </a>
                                 </div>
                             </div>
                         </div>
-                        <!-- fin de boucle d'affichage -->
-                    </div>
+                    <?php
+                    } // fin de la boucle d'affichage
+                    ?>
+                </div>
             </section>
         </div>
     </main>

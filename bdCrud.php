@@ -1,12 +1,12 @@
 <?php
 //Définir les fichiers à importer
-// require_once '';
-// require '';
+require_once 'connexion.php';
+require 'functions.php';
 // Récupération des valeurs pour les listes déroulantes depuis les fonctions respectives
-$especes = '';
-$periodes = '';
-$regimes = '';
-$types = '';
+$especes = getEspeceName($db);
+$periodes = getPeriode($db);
+$regimes = getRegime($db);
+$types = getTypeEspece($db);
 ?>
 
 <!DOCTYPE html>
@@ -27,15 +27,16 @@ $types = '';
 
 <body>
     <!-- Inclure le header -->
-    <!-- </header> -->
+    <?php include 'template/header.php'; ?>
+    </header>
     <h1 class="text-center">Gestion de la base de données : Dinoverse</h1>
 
     <div class="container mt-5">
         <div class="row justify-content-center">
             <div class="col-md-6">
                 <h2 class="mb-4 text-center">Ajouter une nouvelle espèce</h2>
-    <!-- Penser à définir l'action (quelle page assure le traitement du formulaire) et la méthode -->
-                <form action="" method="">
+    <!-- Définition de l'action (quelle page assure le traitement du formulaire) et la méthode -->
+                <form action="add_espece.php" method="POST">
                     <div class="mb-3">
                         <label for="nom_espece" class="form-label">Nom de l'espèce</label>
                         <input type="text" class="form-control" id="nom_espece" name="nom_espece" required>
@@ -44,21 +45,27 @@ $types = '';
                         <label for="id_periode" class="form-label">Période</label>
                         <select class="form-select" id="id_periode" name="id_periode" required>
                             <option value="" disabled selected>Choisir la période</option>
-    <!----------------- Boucle d'affichage des options pour la période dans le select ----------->
+                            <?php foreach ($periodes as $periode) : ?>
+                                <option value="<?= $periode['id_periode'] ?>"><?= $periode['nom_periode'] ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="type_espece" class="form-label">Type d'espèce</label>
                         <select class="form-select" id="type_espece" name="type_espece" required>
                             <option value="" disabled selected>Choisir le type d'espèce</option>
-    <!----------------- Boucle d'affichage des options du type de l'espèce dans le select ----------->                                   
+                            <?php foreach ($types as $type) : ?>
+                                <option value="<?= $type ?>"><?= $type ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="mb-3">
                         <label for="regime_alimentaire" class="form-label">Régime alimentaire</label>
                         <select class="form-select" id="regime_alimentaire" name="regime_alimentaire" required>
                             <option value="" disabled selected>Choisir le régime</option>
-    <!----------------- Boucle d'affichage des options de régime alimentaire dans le select ----------->                         
+                            <?php foreach ($regimes as $regime) : ?>
+                                <option value="<?= $regime['id_regime'] ?>"><?= $regime['type_regime'] ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -90,7 +97,9 @@ $types = '';
                         <label for="select_espece" class="form-label">Sélectionner une espèce à supprimer :</label>
                         <select class="form-select" id="select_espece" name="id_espece" required>
                             <option value="" disabled selected>Choisir une espèce à supprimer</option>
-    <!----------------- Boucle d'affichage des ids (comme otion.value) et des noms d'espèce dans le select ----------->   
+                            <?php foreach ($especes as $espece) : ?>
+                                <option value="<?= $espece['id_espece'] ?>"><?= $espece['nom_espece'] ?></option>
+                            <?php endforeach; ?>
                         </select>
                     </div>
                     <div class="mb-3 text-center">
@@ -102,9 +111,20 @@ $types = '';
     </div> 
     <script>
        // Utilisez une fenêtre Confirm en JavaScript pour s'assurer de la suppression
-       // Annuler la soumission du formulaire si l'utilisateur clique sur "Annuler"
-                event.preventDefault(); // pour empêcher la soumission du formulare (à inclure dans une condition)
-         
+       document.getElementById('deleteForm').addEventListener('submit', function(event) {
+           // Récupérer le nom de l'espèce sélectionnée
+           const selectElement = document.getElementById('select_espece');
+           const selectedOption = selectElement.options[selectElement.selectedIndex];
+           const especeName = selectedOption.text;
+           
+           // Demander confirmation
+           const confirmDelete = confirm(`Êtes-vous sûr de vouloir supprimer l'espèce "${especeName}" ?\nCette action est irréversible.`);
+           
+           // Si l'utilisateur clique sur "Annuler", empêcher la soumission du formulaire
+           if (!confirmDelete) {
+               event.preventDefault(); // pour empêcher la soumission du formulaire
+           }
+       });
     </script>   
 </body>
 </html>

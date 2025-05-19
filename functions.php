@@ -29,7 +29,17 @@ periode ORDER BY nom_periode ASC";
  */
 function getEspeceName($db)
 {
-    // A construire sur le même principe que la fonction getPeriode()
+$sql = "SELECT 
+        espece.id_espece,
+        espece.nom_espece
+    FROM 
+        espece
+    ORDER BY 
+        nom_espece ASC";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    $especes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return $especes;
 }
 
 /**
@@ -69,7 +79,17 @@ periode ON espece.id_periode = periode.id_periode;";
  */
 function getRegime($db)
 {
-    // A construire sur le même principe que la fonction getPeriode()
+    $sql = "SELECT 
+        regime_alimentaire.id_regime,
+        regime_alimentaire.type_regime
+    FROM 
+        regime_alimentaire
+    ORDER BY 
+        type_regime ASC";
+    $stmt = $db->prepare($sql);
+    $stmt->execute();
+    $regimes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    return $regimes;
 }
 
 /**

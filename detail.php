@@ -5,14 +5,25 @@ require 'functions.php';
 // Vérification si le paramètre d'URL "id" est présent
 if(isset($_GET['id'])) {
     // Récupération de l'identifiant de l'espèce depuis l'URL
-    // ----- votre saisie ici -----
+    $id_espece = intval($_GET['id']);
 
     // Appel de la fonction pour récupérer les détails de l'espèce
-    $detail_espece = '----- votre saisie ici -----';
+    $detail_espece = getDetailEspece($db, $id_espece);
 
     // Vérification si l'espèce existe
     if($detail_espece) {
         // affectation des valeurs des attributs de l'espèce à des variables à destination de l'affichage
+        $nom_espece = $detail_espece['nom_espece'];
+        $type_espece = $detail_espece['type_espece'];
+        $periode_espece = $detail_espece['nom_periode_espece'];
+        $regime = $detail_espece['nom_regime'];
+        $description_espece = $detail_espece['description_espece'];
+        $taille = $detail_espece['taille_metres'];
+        $poids = $detail_espece['poids'];
+        $img_espece = $detail_espece['img_espece'];
+        
+        // Récupération des fossiles associés à cette espèce
+        $fossiles = getFossile($db, $id_espece);
     } else {
         // Si l'espèce n'existe pas, vous pouvez gérer cette situation (par exemple, afficher un message d'erreur ou rediriger l'utilisateur)
         echo "L'animal que vous avez demandé n'existe pas.";
@@ -71,22 +82,28 @@ if(isset($_GET['id'])) {
             <div class="accordion-body">
                 <?php
                 // Récupérer les fossiles de l'espèce affichée dans une variable $fossiles
-
-
+                
                 // Vérifier si des fossiles sont disponibles
                 if($fossiles !== false) {
-                    // in itérateur pourrait être utile (voir le rendu de la maquette)
+                    // Afficher chaque fossile
+                    $i = 1; // itérateur pour numéroter les fossiles
                     foreach($fossiles as $fossile) {
+                        // Formater la date avec la fonction de formatage
+                        $date_fr = formatMoisFrancais($fossile['date_decouverte']);
+                        
                         // Afficher les informations du fossile
-                        echo '<h5>Informations sur le fossile de " " </h5>';
-                        echo '<p class="ms-3">Date de découverte : " " </p>';
-                        echo '<p class="ms-3"> " " </p>';
+                        echo '<h5>Informations sur le fossile de ' . $nom_espece . ' #' . $i . '</h5>';
+                        echo '<p class="ms-3">Date de découverte : ' . $date_fr . '</p>';
+                        echo '<p class="ms-3">Lieu de découverte : ' . $fossile['lieu_decouverte'] . '</p>';
+                        echo '<p class="ms-3">Description : ' . $fossile['description_fossile'] . '</p>';
+                        echo '<hr>';
+                        $i++;
                     }
                 } else {
                     // Aucun fossile n'est disponible
                     echo "Aucun fossile n'est disponible pour cette espèce.";
                 }
-?>
+                ?>
             </div>
         </div>
     </div>
